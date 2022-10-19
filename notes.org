@@ -1,0 +1,132 @@
+* Notes
+<2022-10-19 Wed 17:48>: These are the different types of generators available in Rails:
+- Model: Generates a model and migration file
+- Controller: Generates a controller
+- Migration: Will generate a new migration
+- Resource: Generates a model, controller, migration, views directory, and optionally routes
+
+Related 'generator' syntax:
+#+begin_src bash
+Rails g <name of generator> <options> --no-test-framework
+#+end_src
+
+In order to create the related model for this video, I used the following command within the 'pet-shop' directory to create two models that were specified at the end with a single space between them, NOTE: The '--no-test-framework' is to avoid creating extraneous test files in the project as well:
+#+begin_src bash
+# In the 'pet-shop' folder:
+rails g model Pet name:string breed:string --no-test-framework
+#+end_src
+
+Related output:
+#+begin_src bash
+samuelbanya@Samuels-MBP ~/hub/Development/code/phase-4/phase-4-lecture-videos-rails-generators/pet-shop $ rails g model Pet name:string breed:string --no-test-framework
+
+The dependency tzinfo-data (>= 0) will be unused by any of the platforms Bundler is installing for. Bundler is installing for ruby but the dependency is only for x86-mingw32, x86-mswin32, x64-mingw32, java. To add those platforms to the bundle, run `bundle lock --add-platform x86-mingw32 x86-mswin32 x64-mingw32 java`.
+      invoke  active_record
+      create    db/migrate/20221019225337_create_pets.rb
+      create    app/models/pet.rb
+#+end_src
+
+This created an associated model in '/app/models/pet.rb' with the following contents:
+#+begin_src ruby
+class Pet < ApplicationRecord
+end
+#+end_src
+
+This also created an associated migration within '/db/migrate/20221019225337_create_pets.rb' file with the following contents:
+#+begin_src ruby
+class CreatePets < ActiveRecord::Migration[7.0]
+  def change
+    create_table :pets do |t|
+      t.string :name
+      t.string :breed
+
+      t.timestamps
+    end
+  end
+end
+#+end_src
+
+I then created a new resource called 'Shop' with the following command in the 'pet-shop' directory:
+#+begin_src bash
+rails g resource Shop --no-test-framework
+#+end_src
+
+Related output:
+#+begin_src bash
+samuelbanya@Samuels-MBP ~/hub/Development/code/phase-4/phase-4-lecture-videos-rails-generators/pet-shop $ rails g resource Shop --no-test-framework
+The dependency tzinfo-data (>= 0) will be unused by any of the platforms Bundler is installing for. Bundler is installing for ruby but the dependency is only for x86-mingw32, x86-mswin32, x64-mingw32, java. To add those platforms to the bundle, run `bundle lock --add-platform x86-mingw32 x86-mswin32 x64-mingw32 java`.
+      invoke  active_record
+      create    db/migrate/20221019225850_create_shops.rb
+      create    app/models/shop.rb
+      invoke  controller
+      create    app/controllers/shops_controller.rb
+      invoke    erb
+      create      app/views/shops
+      invoke    helper
+      create      app/helpers/shops_helper.rb
+      invoke  resource_route
+       route    resources :shops
+#+end_src
+
+The resulting model in the 'app/models/shop.rb' file had the following contents:
+#+begin_src ruby
+class Shop < ApplicationRecord
+end
+#+end_src
+
+The resulting controller in the 'pet-shop/app/controllers/shops_controller.rb' file had the following contents:
+#+begin_src ruby
+class ShopsController < ApplicationController
+end
+#+end_src
+
+It also created an empty 'Views' folder within the 'app/views' folder which will contain any views associated with the 'Shop' model later on.
+
+It also created a related migration file in the '20221019225850_create_shops.rb' file with the following contents:
+#+begin_src ruby
+class CreateShops < ActiveRecord::Migration[7.0]
+  def change
+    create_table :shops do |t|
+
+      t.timestamps
+    end
+  end
+end
+#+end_src
+
+It also created a related 'routes' file in the 'app/config/routes.rb' file with the following contents, which will contain all the necessary resources for the 'RESTful' model to prevent having to manually create each individual resource:
+#+begin_src ruby
+Rails.application.routes.draw do
+  resources :shops
+  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+
+  # Defines the root path route ("/")
+  # root "articles#index"
+end
+#+end_src
+
+I then used the following command to 'destroy' the related 'Shop' generator that I created earlier with 'rails d <resource> <name of generator>' command:
+#+begin_src bash
+samuelbanya@Samuels-MBP ~/hub/Development/code/phase-4/phase-4-lecture-videos-rails-generators/pet-shop $ rails d resource Shop
+
+The dependency tzinfo-data (>= 0) will be unused by any of the platforms Bundler is installing for. Bundler is installing for ruby but the dependency is only for x86-mingw32, x86-mswin32, x64-mingw32, java. To add those platforms to the bundle, run `bundle lock --add-platform x86-mingw32 x86-mswin32 x64-mingw32 java`.
+      invoke  active_record
+      remove    db/migrate/20221019225850_create_shops.rb
+      remove    app/models/shop.rb
+      invoke    test_unit
+      remove      test/models/shop_test.rb
+      remove      test/fixtures/shops.yml
+      invoke  controller
+      remove    app/controllers/shops_controller.rb
+      invoke    erb
+      remove      app/views/shops
+      invoke    test_unit
+      remove      test/controllers/shops_controller_test.rb
+      invoke    helper
+      remove      app/helpers/shops_helper.rb
+      invoke      test_unit
+      invoke  resource_route
+       route    resources :shops
+#+end_src
+
+NOTE: I pretty much did the 'rails g' command from earlier again just to bring back the 'Shop' model if I needed to use it later for a future lesson.
